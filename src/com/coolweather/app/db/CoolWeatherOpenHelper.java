@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class DBHelper extends SQLiteOpenHelper {
+public class CoolWeatherOpenHelper extends SQLiteOpenHelper {
 
 	/**
 	 *  Province±ÌΩ®±Ì”Ôæ‰
@@ -29,10 +29,9 @@ public class DBHelper extends SQLiteOpenHelper {
 				+ "id integer primary key autoincrement, " 
 				+ "county_name text, " 
 				+ "county_code text, "
-				+ "weather_code text, " 
 				+ "city_id integer)";
 
-	public DBHelper(Context context, String name, CursorFactory factory,
+	public CoolWeatherOpenHelper(Context context, String name, CursorFactory factory,
 			int version) {
 		super(context, name, factory, version);
 	}

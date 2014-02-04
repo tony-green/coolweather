@@ -12,7 +12,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class DBConnector {
+public class CoolWeatherDB {
 
 	/**
 	 * 数据库名
@@ -24,24 +24,25 @@ public class DBConnector {
 	 */
 	public static final int VERSION = 1;
 
-	private static DBConnector dbConnector;
+	private static CoolWeatherDB dbConnector;
 
 	private SQLiteDatabase db;
 
 	/**
 	 * 将构造方法私有化
 	 */
-	private DBConnector(Context context) {
-		DBHelper dbHelper = new DBHelper(context, DB_NAME, null, VERSION);
+	private CoolWeatherDB(Context context) {
+		CoolWeatherOpenHelper dbHelper = new CoolWeatherOpenHelper(context,
+				DB_NAME, null, VERSION);
 		db = dbHelper.getWritableDatabase();
 	}
 
 	/**
 	 * 获取DBConnector的实例。
 	 */
-	public synchronized static DBConnector getInstance(Context context) {
+	public synchronized static CoolWeatherDB getInstance(Context context) {
 		if (dbConnector == null) {
-			dbConnector = new DBConnector(context);
+			dbConnector = new CoolWeatherDB(context);
 		}
 		return dbConnector;
 	}
@@ -122,7 +123,6 @@ public class DBConnector {
 			ContentValues values = new ContentValues();
 			values.put("county_name", county.getCountyName());
 			values.put("county_code", county.getCountyCode());
-			values.put("weather_code", county.getWeatherCode());
 			values.put("city_id", county.getCityId());
 			db.insert("County", null, values);
 		}
@@ -143,8 +143,6 @@ public class DBConnector {
 						.getColumnIndex("county_name")));
 				county.setCountyCode(cursor.getString(cursor
 						.getColumnIndex("county_code")));
-				county.setWeatherCode(cursor.getString(cursor
-						.getColumnIndex("weather_code")));
 				county.setCityId(cityId);
 				list.add(county);
 			} while (cursor.moveToNext());
