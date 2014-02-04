@@ -24,7 +24,7 @@ public class CoolWeatherDB {
 	 */
 	public static final int VERSION = 1;
 
-	private static CoolWeatherDB dbConnector;
+	private static CoolWeatherDB coolWeatherDB;
 
 	private SQLiteDatabase db;
 
@@ -38,13 +38,13 @@ public class CoolWeatherDB {
 	}
 
 	/**
-	 * 获取DBConnector的实例。
+	 * 获取CoolWeatherDB的实例。
 	 */
 	public synchronized static CoolWeatherDB getInstance(Context context) {
-		if (dbConnector == null) {
-			dbConnector = new CoolWeatherDB(context);
+		if (coolWeatherDB == null) {
+			coolWeatherDB = new CoolWeatherDB(context);
 		}
-		return dbConnector;
+		return coolWeatherDB;
 	}
 
 	/**
