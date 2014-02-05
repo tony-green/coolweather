@@ -38,27 +38,27 @@ public class ChooseAreaActivity extends Activity {
 	private CoolWeatherDB coolWeatherDB;
 	private List<String> dataList = new ArrayList<String>();
 	/**
-	 * Ê¡ÁĞ±í
+	 * çœåˆ—è¡¨
 	 */
 	private List<Province> provinceList;
 	/**
-	 * ÊĞÁĞ±í
+	 * å¸‚åˆ—è¡¨
 	 */
 	private List<City> cityList;
 	/**
-	 * ÏØÁĞ±í
+	 * å¿åˆ—è¡¨
 	 */
 	private List<County> countyList;
 	/**
-	 * Ñ¡ÖĞµÄÊ¡·İ
+	 * é€‰ä¸­çš„çœä»½
 	 */
 	private Province selectedProvince;
 	/**
-	 * Ñ¡ÖĞµÄ³ÇÊĞ
+	 * é€‰ä¸­çš„åŸå¸‚
 	 */
 	private City selectedCity;
 	/**
-	 * µ±Ç°Ñ¡ÖĞµÄ¼¶±ğ
+	 * å½“å‰é€‰ä¸­çš„çº§åˆ«
 	 */
 	private int currentLevel;
 
@@ -85,11 +85,11 @@ public class ChooseAreaActivity extends Activity {
 				}
 			}
 		});
-		queryProvinces();  // ¼ÓÔØÊ¡¼¶Êı¾İ
+		queryProvinces();  // åŠ è½½çœçº§æ•°æ®
 	}
 
 	/**
-	 * ²éÑ¯È«¹úËùÓĞµÄÊ¡£¬ÓÅÏÈ´ÓÊı¾İ¿â²éÑ¯£¬Èç¹ûÃ»ÓĞ²éÑ¯µ½ÔÙÈ¥·şÎñÆ÷ÉÏ²éÑ¯¡£
+	 * æŸ¥è¯¢å…¨å›½æ‰€æœ‰çš„çœï¼Œä¼˜å…ˆä»æ•°æ®åº“æŸ¥è¯¢ï¼Œå¦‚æœæ²¡æœ‰æŸ¥è¯¢åˆ°å†å»æœåŠ¡å™¨ä¸ŠæŸ¥è¯¢ã€‚
 	 */
 	private void queryProvinces() {
 		provinceList = coolWeatherDB.loadProvinces();
@@ -100,7 +100,7 @@ public class ChooseAreaActivity extends Activity {
 			}
 			adapter.notifyDataSetChanged();
 			listView.setSelection(0);
-			titleText.setText("ÖĞ¹ú");
+			titleText.setText("ä¸­å›½");
 			currentLevel = LEVEL_PROVINCE;
 		} else {
 			queryFromServer(null, "province");
@@ -108,7 +108,7 @@ public class ChooseAreaActivity extends Activity {
 	}
 
 	/**
-	 * ²éÑ¯Ñ¡ÖĞÊ¡ÄÚËùÓĞµÄÊĞ£¬ÓÅÏÈ´ÓÊı¾İ¿â²éÑ¯£¬Èç¹ûÃ»ÓĞ²éÑ¯µ½ÔÙÈ¥·şÎñÆ÷ÉÏ²éÑ¯¡£
+	 * æŸ¥è¯¢é€‰ä¸­çœå†…æ‰€æœ‰çš„å¸‚ï¼Œä¼˜å…ˆä»æ•°æ®åº“æŸ¥è¯¢ï¼Œå¦‚æœæ²¡æœ‰æŸ¥è¯¢åˆ°å†å»æœåŠ¡å™¨ä¸ŠæŸ¥è¯¢ã€‚
 	 */
 	private void queryCities() {
 		cityList = coolWeatherDB.loadCities(selectedProvince.getId());
@@ -127,7 +127,7 @@ public class ChooseAreaActivity extends Activity {
 	}
 	
 	/**
-	 * ²éÑ¯Ñ¡ÖĞÊĞÄÚËùÓĞµÄÏØ£¬ÓÅÏÈ´ÓÊı¾İ¿â²éÑ¯£¬Èç¹ûÃ»ÓĞ²éÑ¯µ½ÔÙÈ¥·şÎñÆ÷ÉÏ²éÑ¯¡£
+	 * æŸ¥è¯¢é€‰ä¸­å¸‚å†…æ‰€æœ‰çš„å¿ï¼Œä¼˜å…ˆä»æ•°æ®åº“æŸ¥è¯¢ï¼Œå¦‚æœæ²¡æœ‰æŸ¥è¯¢åˆ°å†å»æœåŠ¡å™¨ä¸ŠæŸ¥è¯¢ã€‚
 	 */
 	private void queryCounties() {
 		countyList = coolWeatherDB.loadCounties(selectedCity.getId());
@@ -146,7 +146,7 @@ public class ChooseAreaActivity extends Activity {
 	}
 	
 	/**
-	 * ¸ù¾İ´«ÈëµÄ´úºÅºÍÀàĞÍ´Ó·şÎñÆ÷ÉÏ²éÑ¯Ê¡ÊĞÏØÊı¾İ¡£
+	 * æ ¹æ®ä¼ å…¥çš„ä»£å·å’Œç±»å‹ä»æœåŠ¡å™¨ä¸ŠæŸ¥è¯¢çœå¸‚å¿æ•°æ®ã€‚
 	 */
 	private void queryFromServer(final String code, final String type) {
 		String address;
@@ -171,7 +171,7 @@ public class ChooseAreaActivity extends Activity {
 							response, selectedCity.getId());
 				}
 				if (result) {
-					// Í¨¹ırunOnUiThread()·½·¨»Øµ½Ö÷Ïß³Ì´¦ÀíÂß¼­
+					// é€šè¿‡runOnUiThread()æ–¹æ³•å›åˆ°ä¸»çº¿ç¨‹å¤„ç†é€»è¾‘
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
@@ -190,13 +190,13 @@ public class ChooseAreaActivity extends Activity {
 
 			@Override
 			public void onError(Exception e) {
-				// Í¨¹ırunOnUiThread()·½·¨»Øµ½Ö÷Ïß³Ì´¦ÀíÂß¼­
+				// é€šè¿‡runOnUiThread()æ–¹æ³•å›åˆ°ä¸»çº¿ç¨‹å¤„ç†é€»è¾‘
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 						closeProgressDialog();
 						Toast.makeText(ChooseAreaActivity.this,
-										"¼ÓÔØÊ§°Ü", Toast.LENGTH_SHORT).show();
+										"åŠ è½½å¤±è´¥", Toast.LENGTH_SHORT).show();
 					}
 				});
 			}
@@ -204,19 +204,19 @@ public class ChooseAreaActivity extends Activity {
 	}
 	
 	/**
-	 * ÏÔÊ¾½ø¶È¶Ô»°¿ò
+	 * æ˜¾ç¤ºè¿›åº¦å¯¹è¯æ¡†
 	 */
 	private void showProgressDialog() {
 		if (progressDialog == null) {
 			progressDialog = new ProgressDialog(this);
-			progressDialog.setMessage("ÕıÔÚ¼ÓÔØ...");
+			progressDialog.setMessage("æ­£åœ¨åŠ è½½...");
 			progressDialog.setCanceledOnTouchOutside(false);
 		}
 		progressDialog.show();
 	}
 	
 	/**
-	 * ¹Ø±Õ½ø¶È¶Ô»°¿ò
+	 * å…³é—­è¿›åº¦å¯¹è¯æ¡†
 	 */
 	private void closeProgressDialog() {
 		if (progressDialog != null) {
@@ -225,7 +225,7 @@ public class ChooseAreaActivity extends Activity {
 	}
 	
 	/**
-	 * ²¶»ñBack°´¼ü£¬¸ù¾İµ±Ç°µÄ¼¶±ğÀ´ÅĞ¶Ï£¬´ËÊ±Ó¦¸Ã·µ»ØÊĞÁĞ±í¡¢Ê¡ÁĞ±í¡¢»¹ÊÇÖ±½ÓÍË³ö¡£
+	 * æ•è·BackæŒ‰é”®ï¼Œæ ¹æ®å½“å‰çš„çº§åˆ«æ¥åˆ¤æ–­ï¼Œæ­¤æ—¶åº”è¯¥è¿”å›å¸‚åˆ—è¡¨ã€çœåˆ—è¡¨ã€è¿˜æ˜¯ç›´æ¥é€€å‡ºã€‚
 	 */
 	@Override
 	public void onBackPressed() {
