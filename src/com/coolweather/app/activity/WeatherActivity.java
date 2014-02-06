@@ -12,16 +12,19 @@ import com.coolweather.app.util.HttpCallbackListener;
 import com.coolweather.app.util.HttpUtil;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class WeatherActivity extends Activity {
+public class WeatherActivity extends Activity implements OnClickListener{
 
 	private LinearLayout weatherInfoLayout;
 	/**
@@ -48,6 +51,14 @@ public class WeatherActivity extends Activity {
 	 * 用于显示当前日期
 	 */
 	private TextView currentDateText;
+	/**
+	 * 切换城市按钮
+	 */
+	private Button switchCity;
+	/**
+	 * 更新天气按钮
+	 */
+	private Button refreshWeather;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +73,8 @@ public class WeatherActivity extends Activity {
 		topTempText = (TextView) findViewById(R.id.top_temp);
 		lowTempText = (TextView) findViewById(R.id.low_temp);
 		currentDateText = (TextView) findViewById(R.id.current_date);
+		switchCity = (Button) findViewById(R.id.switch_city);
+		refreshWeather = (Button) findViewById(R.id.refresh_weather);
 		String countyCode = getIntent().getStringExtra("county_code");
 		if (!TextUtils.isEmpty(countyCode)) {
 			// 有县级代号时就去查询天气
@@ -72,6 +85,30 @@ public class WeatherActivity extends Activity {
 		} else {
 			// 没有县级代号时就直接显示本地天气
 			showWeather();
+		}
+		switchCity.setOnClickListener(this);
+		refreshWeather.setOnClickListener(this);
+	}
+	
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.switch_city:
+			Intent intent = new Intent(this, ChooseAreaActivity.class);
+			intent.putExtra("from_weather_activity", true);
+			startActivity(intent);
+			finish();
+			break;
+		case R.id.refresh_weather:
+			publishText.setText("同步中...");
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+			String weatherCode = prefs.getString("weather_code", "");
+			if (!TextUtils.isEmpty(weatherCode)) {
+				queryWeatherInfo(weatherCode);
+			}
+			break;
+		default:
+			break;
 		}
 	}
 	
@@ -138,11 +175,12 @@ public class WeatherActivity extends Activity {
 			JSONObject jsonObject = new JSONObject(response);
 			JSONObject weatherInfo = jsonObject.getJSONObject("weatherinfo");
 			String cityName = weatherInfo.getString("city");
+			String weatherCode = weatherInfo.getString("cityid");
 			String topTemp = weatherInfo.getString("temp1");
 			String lowTemp = weatherInfo.getString("temp2");
 			String weatherDesp = weatherInfo.getString("weather");
 			String publishTime = weatherInfo.getString("ptime");
-			saveWeatherInfo(cityName, topTemp, lowTemp, weatherDesp, publishTime);
+			saveWeatherInfo(cityName, weatherCode, topTemp, lowTemp, weatherDesp, publishTime);
 			showWeather();
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -152,11 +190,13 @@ public class WeatherActivity extends Activity {
 	/**
 	 * 将服务器返回的所有天气信息存储到SharedPreferences文件中。
 	 */
-	private void saveWeatherInfo(String cityName, String topTemp,
-			String lowTemp, String weatherDesp, String publishTime) {
+	private void saveWeatherInfo(String cityName, String weatherCode,
+			String topTemp, String lowTemp, String weatherDesp,
+			String publishTime) {
 		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
 		editor.putBoolean("city_selected", true);
 		editor.putString("city_name", cityName);
+		editor.putString("weather_code", weatherCode);
 		editor.putString("top_temp", topTemp);
 		editor.putString("low_temp", lowTemp);
 		editor.putString("weather_desp", weatherDesp);
