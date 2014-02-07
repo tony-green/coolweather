@@ -1,15 +1,10 @@
 package com.coolweather.app.activity;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.coolweather.app.R;
+import com.coolweather.app.service.AutoUpdateService;
 import com.coolweather.app.util.HttpCallbackListener;
 import com.coolweather.app.util.HttpUtil;
+import com.coolweather.app.util.Utility;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -40,13 +35,13 @@ public class WeatherActivity extends Activity implements OnClickListener{
 	 */
 	private TextView weatherDespText;
 	/**
-	 * 用于显示最高气温
+	 * 用于显示气温1
 	 */
-	private TextView topTempText;
+	private TextView temp1Text;
 	/**
-	 * 用于显示最低气温
+	 * 用于显示气温2
 	 */
-	private TextView lowTempText;
+	private TextView temp2Text;
 	/**
 	 * 用于显示当前日期
 	 */
@@ -70,8 +65,8 @@ public class WeatherActivity extends Activity implements OnClickListener{
 		cityNameText = (TextView) findViewById(R.id.city_name);
 		publishText = (TextView) findViewById(R.id.publish_text);
 		weatherDespText = (TextView) findViewById(R.id.weather_desp);
-		topTempText = (TextView) findViewById(R.id.top_temp);
-		lowTempText = (TextView) findViewById(R.id.low_temp);
+		temp1Text = (TextView) findViewById(R.id.temp1);
+		temp2Text = (TextView) findViewById(R.id.temp2);
 		currentDateText = (TextView) findViewById(R.id.current_date);
 		switchCity = (Button) findViewById(R.id.switch_city);
 		refreshWeather = (Button) findViewById(R.id.refresh_weather);
@@ -145,11 +140,12 @@ public class WeatherActivity extends Activity implements OnClickListener{
 						}
 					}
 				} else if ("weatherCode".equals(type)) {
+					// 处理服务器返回的天气信息
+					Utility.handleWeatherResponse(WeatherActivity.this, response);
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							// 处理服务器返回的天气信息
-							handleWeatherResponse(response);
+							showWeather();
 						}
 					});
 				}
@@ -168,56 +164,20 @@ public class WeatherActivity extends Activity implements OnClickListener{
 	}
 	
 	/**
-	 * 解析服务器返回的JSON数据，将解析出的数据存储到本地，并将结果进行显示。
-	 */
-	private void handleWeatherResponse(String response) {
-		try {
-			JSONObject jsonObject = new JSONObject(response);
-			JSONObject weatherInfo = jsonObject.getJSONObject("weatherinfo");
-			String cityName = weatherInfo.getString("city");
-			String weatherCode = weatherInfo.getString("cityid");
-			String topTemp = weatherInfo.getString("temp1");
-			String lowTemp = weatherInfo.getString("temp2");
-			String weatherDesp = weatherInfo.getString("weather");
-			String publishTime = weatherInfo.getString("ptime");
-			saveWeatherInfo(cityName, weatherCode, topTemp, lowTemp, weatherDesp, publishTime);
-			showWeather();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * 将服务器返回的所有天气信息存储到SharedPreferences文件中。
-	 */
-	private void saveWeatherInfo(String cityName, String weatherCode,
-			String topTemp, String lowTemp, String weatherDesp,
-			String publishTime) {
-		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-		editor.putBoolean("city_selected", true);
-		editor.putString("city_name", cityName);
-		editor.putString("weather_code", weatherCode);
-		editor.putString("top_temp", topTemp);
-		editor.putString("low_temp", lowTemp);
-		editor.putString("weather_desp", weatherDesp);
-		editor.putString("publish_time", publishTime);
-		editor.commit();
-	}
-	
-	/**
 	 * 从SharedPreferences文件中读取存储的天气信息，并显示到界面上。
 	 */
 	private void showWeather() {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
 		cityNameText.setText( prefs.getString("city_name", ""));
-		topTempText.setText(prefs.getString("top_temp", ""));
-		lowTempText.setText(prefs.getString("low_temp", ""));
+		temp1Text.setText(prefs.getString("temp1", ""));
+		temp2Text.setText(prefs.getString("temp2", ""));
 		weatherDespText.setText(prefs.getString("weather_desp", ""));
 		publishText.setText("今天" + prefs.getString("publish_time", "") + "发布");
-		currentDateText.setText(sdf.format(new Date()));
+		currentDateText.setText(prefs.getString("current_date", ""));
 		weatherInfoLayout.setVisibility(View.VISIBLE);
 		cityNameText.setVisibility(View.VISIBLE);
+		Intent intent = new Intent(this, AutoUpdateService.class);
+		startService(intent);
 	}
 
 }
